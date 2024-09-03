@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Página Inicial</title>
+    <title>Salas Virtuais Dos Setores</title>
     <link rel="icon" href="https://github.com/Ramon-UNISUAM/UNISUAM/blob/main/favicon.png?raw=true" type="image/png">
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap');
@@ -20,6 +20,7 @@
             min-height: 100vh;
             color: #333;
             transition: background-color 0.3s ease, color 0.3s ease;
+            overflow-x: hidden; /* Evitar rolagem horizontal */
         }
 
         header {
@@ -32,6 +33,7 @@
             display: flex;
             align-items: center;
             justify-content: space-between;
+            box-sizing: border-box;
         }
 
         header img {
@@ -39,10 +41,15 @@
             margin-left: 20px;
         }
 
-        .button-group {
+        .left-header {
             display: flex;
-            gap: 10px;
             align-items: center;
+        }
+
+        .right-header {
+            display: flex;
+            align-items: center;
+            margin-left: auto;
         }
 
         .theme-toggle {
@@ -53,36 +60,15 @@
             color: white;
             transition: transform 0.3s ease;
             position: relative;
+            margin-right: 10px; /* Ajustar margem */
         }
 
         .theme-toggle:hover {
             transform: scale(1.2);
         }
 
-        .theme-toggle .tooltiptext {
-            visibility: hidden;
-            width: 140px;
-            background-color: #555;
-            color: #fff;
-            text-align: center;
-            border-radius: 5px;
-            padding: 5px 0;
-            position: absolute;
-            z-index: 1;
-            top: 100%;
-            left: 50%;
-            margin-left: -70px;
-            opacity: 0;
-            transition: opacity 0.3s;
-        }
-
-        .theme-toggle:hover .tooltiptext {
-            visibility: visible;
-            opacity: 1;
-        }
-
         .search-bar {
-            margin-right: 20px;
+            margin-right: 10px;
             position: relative;
             display: flex;
             align-items: center;
@@ -96,6 +82,7 @@
             font-size: 0.9em;
             box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
             transition: all 0.3s ease;
+            box-sizing: border-box; /* Garantir que a barra de pesquisa não ultrapasse os limites */
         }
 
         .search-bar input:focus {
@@ -120,6 +107,7 @@
             padding: 40px;
             width: 100%;
             max-width: 1200px;
+            box-sizing: border-box;
         }
 
         .card {
@@ -150,33 +138,6 @@
             transition: color 0.3s ease;
         }
 
-        .tooltip {
-            position: relative;
-            display: inline-block;
-        }
-
-        .tooltip .tooltiptext {
-            visibility: hidden;
-            width: 140px;
-            background-color: #555;
-            color: #fff;
-            text-align: center;
-            border-radius: 5px;
-            padding: 5px 0;
-            position: absolute;
-            z-index: 1;
-            top: 100%;
-            left: 50%;
-            margin-left: -70px;
-            opacity: 0;
-            transition: opacity 0.3s;
-        }
-
-        .tooltip:hover .tooltiptext {
-            visibility: visible;
-            opacity: 1;
-        }
-
         .card .toggle-link {
             display: inline-block;
             margin-top: 20px;
@@ -192,32 +153,6 @@
 
         .card .toggle-link:hover {
             background-color: #314a86;
-            transform: translateY(-5px);
-        }
-
-        .card .show-links {
-            display: none;
-            flex-direction: column;
-            gap: 15px;
-            margin-top: 20px;
-        }
-
-        .card .show-links a {
-            display: block;
-            padding: 10px;
-            background-color: #5b72b2;
-            color: #ffffff;
-            text-decoration: none;
-            border-radius: 25px;
-            text-align: center;
-            font-size: 1em;
-            transition: background-color 0.3s ease, transform 0.3s ease;
-            width: 180px;
-            margin: 0 auto;
-        }
-
-        .card .show-links a:hover {
-            background-color: #3b5998;
             transform: translateY(-5px);
         }
 
@@ -247,7 +182,7 @@
             color: #ffffff;
         }
 
-        .dark-mode .toggle-link, .dark-mode .show-links a {
+        .dark-mode .toggle-link {
             background-color: #f5c200;
             color: #000;
         }
@@ -261,25 +196,88 @@
             color: #f5c200;
         }
 
-        .dark-mode .tooltip .tooltiptext {
-            background-color: #444;
+        /* Side Menu Styles */
+        .side-menu {
+            height: 100%;
+            width: 0;
+            position: fixed;
+            z-index: 1;
+            top: 0;
+            right: 0;
+            background-color: #0f96ae;
+            overflow-x: hidden;
+            transition: 0.5s;
+            padding-top: 60px;
+        }
+
+        .side-menu a {
+            padding: 8px 8px 8px 32px;
+            text-decoration: none;
+            font-size: 25px;
+            color: white;
+            display: block;
+            transition: 0.3s;
+        }
+
+        .side-menu a:hover {
+            color: #f1f1f1;
+        }
+
+        .side-menu .closebtn {
+            position: absolute;
+            top: 0;
+            left: 25px;
+            font-size: 36px;
+            margin-left: 50px;
+        }
+
+        .menu-icon {
+            font-size: 24px;
+            cursor: pointer;
+            color: white;
+            margin-left: 10px;
+        }
+
+        .menu-content {
+            position: absolute;
+            top: 60px;
+            right: 10px; /* Posicionado logo abaixo do ícone do menu */
+            display: none;
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            padding: 10px;
+            z-index: 1000;
         }
     </style>
 </head>
 <body>
+    <div id="sideMenu" class="side-menu">
+        <a href="javascript:void(0)" class="closebtn" onclick="closeSideMenu()">×</a>
+        <a href="https://tecnologiaseducacionais.github.io/Home/">Página Inicial</a>
+        <a href="https://tecnologiaseducacionais.github.io/Setores-Administrativos/">Setores Administrativos</a>
+        <a href="#">Docentes da Graduação</a>
+        <a href="#">Docentes Stricto-Sensu</a>
+        <a href="#">Docentes Pós-graduação</a>
+        <a href="#">Coordenação</a>
+        <a href="#">Tutores</a>
+    </div>
+
     <header>
-        <a href="index.html">
-            <img src="Logotipo UNISUAM.png" alt="Logotipo">
-        </a>
-        <div class="search-bar">
-            <div class="button-group">
-                <button onclick="toggleDarkMode()" id="darkModeToggle" class="theme-toggle">
-                    🌙
-                    <span class="tooltiptext">Ativar modo escuro</span>
-                </button>
-                <a href="https://docs.google.com/presentation/d/1S98W_EskCuOKAh6G9iZln9KnS2fPL27fJw7a-59_lSY/edit?usp=sharing" target="_blank" style="padding:10px;margin-right: 20px; background-color:#3b5998; color:white; border:none; border-radius:25px; text-decoration:none;">Orientações</a>
+        <div class="left-header">
+            <a href="index.html">
+                <img src="Logotipo UNISUAM.png" alt="Logotipo">
+            </a>
+        </div>
+        <div class="right-header">
+            <div class="search-bar">
+                <input type="text" id="searchInput" onkeyup="filterCards()" placeholder="Buscar setor...">
             </div>
-            <input type="text" id="searchInput" onkeyup="filterCards()" placeholder="Buscar setor...">
+            <a href="https://docs.google.com/presentation/d/1S98W_EskCuOKAh6G9iZln9KnS2fPL27fJw7a-59_lSY/edit?usp=sharing" target="_blank" style="padding:10px;background-color:#3b5998;color:white;border:none;border-radius:25px;text-decoration:none;margin-right:10px;">Orientações</a>
+            <button onclick="toggleDarkMode()" id="darkModeToggle" class="theme-toggle">
+                🌙
+            </button>
+            <span class="menu-icon" onclick="openSideMenu()">☰</span>
         </div>
     </header>
 
@@ -288,44 +286,52 @@
     <div id="noResults">Nenhum setor encontrado.</div>
 
     <div class="container" id="cardContainer">
-    <!-- Card 1: Setores Administrativos -->
-    <div class="card">
-        <h2>Setores Administrativos</h2>
-        <a href="https://tecnologiaseducacionais.github.io/Setores-Administrativos/" class="toggle-link">Acessar</a>
-    </div>
+        <!-- Card 1 -->
+        <div class="card">
+            <h2>Setores Administrativos</h2>
+            <a class="toggle-link" href="https://tecnologiaseducacionais.github.io/Setores-Administrativos/" target="_blank">Acessar</a>
+        </div>
 
-    <!-- Card 2: Docentes da Graduação -->
-    <div class="card">
-        <h2>Docentes da Graduação</h2>
-        <a href="#" class="toggle-link">Acessar</a>
-    </div>
+        <!-- Card 2 -->
+        <div class="card">
+            <h2>Docentes da Graduação</h2>
+            <a class="toggle-link" href="#" target="_blank">Acessar</a>
+        </div>
 
-    <!-- Card 3: Docentes Stricto-Sensu -->
-    <div class="card">
-        <h2>Docentes Stricto-Sensu</h2>
-        <a href="#" class="toggle-link">Acessar</a>
-    </div>
+        <!-- Card 3 -->
+        <div class="card">
+            <h2>Docentes Stricto-Sensu</h2>
+            <a class="toggle-link" href="#" target="_blank">Acessar</a>
+        </div>
 
-    <!-- Card 4: Docentes Pós-graduação -->
-    <div class="card">
-        <h2>Docentes Pós-graduação</h2>
-        <a href="#" class="toggle-link">Acessar</a>
-    </div>
+        <!-- Card 4 -->
+        <div class="card">
+            <h2>Docentes Pós-graduação</h2>
+            <a class="toggle-link" href="#" target="_blank">Acessar</a>
+        </div>
 
-    <!-- Card 5: Coordenação -->
-    <div class="card">
-        <h2>Coordenação</h2>
-        <a href="#" class="toggle-link">Acessar</a>
-    </div>
+        <!-- Card 5 -->
+        <div class="card">
+            <h2>Coordenação</h2>
+            <a class="toggle-link" href="#" target="_blank">Acessar</a>
+        </div>
 
-    <!-- Card 6: Tutores -->
-    <div class="card">
-        <h2>Tutores</h2>
-        <a href="#" class="toggle-link">Acessar</a>
+        <!-- Card 6 -->
+        <div class="card">
+            <h2>Tutores</h2>
+            <a class="toggle-link" href="#" target="_blank">Acessar</a>
+        </div>
     </div>
-</div>
 
     <script>
+        function openSideMenu() {
+            document.getElementById("sideMenu").style.width = "250px";
+        }
+
+        function closeSideMenu() {
+            document.getElementById("sideMenu").style.width = "0";
+        }
+
         function filterCards() {
             var input, filter, container, cards, h2, i, txtValue;
             input = document.getElementById('searchInput');
@@ -348,29 +354,10 @@
             document.getElementById('noResults').style.display = hasVisibleCards ? 'none' : 'block';
         }
 
-        function toggleLinks(button) {
-            var card = button.closest('.card');
-            var links = card.querySelector('.show-links');
-            if (links.style.display === 'none' || links.style.display === '') {
-                links.style.display = 'flex';
-                button.textContent = 'Fechar';
-                button.style.backgroundColor = '#0f96ae';
-            } else {
-                links.style.display = 'none';
-                button.textContent = 'Veja o seu link!';
-                button.style.backgroundColor = '#3b5998';
-            }
-        }
-
         function toggleDarkMode() {
             const toggleButton = document.getElementById('darkModeToggle');
             document.body.classList.toggle("dark-mode");
             toggleButton.textContent = document.body.classList.contains("dark-mode") ? "☀️" : "🌙";
-
-            const tooltip = toggleButton.querySelector('.tooltiptext');
-            if (tooltip) {
-                tooltip.textContent = document.body.classList.contains("dark-mode") ? "Desativar modo escuro" : "Ativar modo escuro";
-            }
         }
     </script>
 </body>
