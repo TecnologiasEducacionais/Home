@@ -1,0 +1,476 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Salas Virtuais Dos Setores</title>
+    <link rel="icon" href="https://github.com/Ramon-UNISUAM/UNISUAM/blob/main/favicon.png?raw=true" type="image/png">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap');
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: #f0f4f8;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: flex-start;
+            min-height: 100vh;
+            color: #333;
+            transition: background-color 0.3s ease, color 0.3s ease;
+        }
+
+        header {
+            background-color: #004070;
+            color: #ffffff;
+            width: 100%;
+            padding: 10px 20px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            transition: background-color 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        header img {
+            max-height: 40px;
+            margin-left: 20px;
+        }
+
+        .button-group {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+        }
+
+        .theme-toggle {
+            background-color: transparent;
+            border: none;
+            font-size: 24px;
+            cursor: pointer;
+            color: white;
+            transition: transform 0.3s ease;
+            position: relative;
+        }
+
+        .theme-toggle:hover {
+            transform: scale(1.2);
+        }
+
+        .theme-toggle .tooltiptext {
+            visibility: hidden;
+            width: 140px;
+            background-color: #555;
+            color: #fff;
+            text-align: center;
+            border-radius: 5px;
+            padding: 5px 0;
+            position: absolute;
+            z-index: 1;
+            top: 100%;
+            left: 50%;
+            margin-left: -70px;
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+
+        .theme-toggle:hover .tooltiptext {
+            visibility: visible;
+            opacity: 1;
+        }
+
+        .search-bar {
+            margin-right: 20px;
+            position: relative;
+            display: flex;
+            align-items: center;
+        }
+
+        .search-bar input {
+            padding: 8px 16px;
+            border-radius: 25px;
+            border: 1px solid #ddd;
+            width: 250px;
+            font-size: 0.9em;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+        }
+
+        .search-bar input:focus {
+            outline: none;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+        }
+
+        h1 {
+            margin-top: 30px;
+            font-weight: 600;
+            font-size: 2.5em;
+            text-align: center;
+            letter-spacing: 1px;
+            color: #333;
+            transition: color 0.3s ease;
+        }
+
+        .container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 30px;
+            padding: 40px;
+            width: 100%;
+            max-width: 1200px;
+        }
+
+        .card {
+            background-color: white;
+            border-radius: 15px;
+            box-shadow: 0 8px 15px rgba(0, 0, 0, 0.1);
+            padding: 25px;
+            text-align: center;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            animation: fadeIn 0.5s ease-in-out;
+        }
+
+        .card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 12px 20px rgba(0, 0, 0, 0.2);
+        }
+
+        @keyframes fadeIn {
+            0% { opacity: 0; transform: translateY(20px); }
+            100% { opacity: 1; transform: translateY(0); }
+        }
+
+        .card h2 {
+            margin-top: 0;
+            font-weight: 600;
+            font-size: 1.5em;
+            color: #3b5998;
+            transition: color 0.3s ease;
+        }
+
+        .tooltip {
+            position: relative;
+            display: inline-block;
+        }
+
+        .tooltip .tooltiptext {
+            visibility: hidden;
+            width: 140px;
+            background-color: #555;
+            color: #fff;
+            text-align: center;
+            border-radius: 5px;
+            padding: 5px 0;
+            position: absolute;
+            z-index: 1;
+            top: 100%;
+            left: 50%;
+            margin-left: -70px;
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+
+        .tooltip:hover .tooltiptext {
+            visibility: visible;
+            opacity: 1;
+        }
+
+        .card .toggle-link {
+            display: inline-block;
+            margin-top: 20px;
+            padding: 12px 25px;
+            background-color: #3b5998;
+            color: #ffffff;
+            text-decoration: none;
+            border-radius: 25px;
+            font-size: 1em;
+            transition: background-color 0.3s ease, transform 0.3s ease;
+            cursor: pointer;
+        }
+
+        .card .toggle-link:hover {
+            background-color: #314a86;
+            transform: translateY(-5px);
+        }
+
+        .card .show-links {
+            display: none;
+            flex-direction: column;
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        .card .show-links a {
+            display: block;
+            padding: 10px;
+            background-color: #5b72b2;
+            color: #ffffff;
+            text-decoration: none;
+            border-radius: 25px;
+            text-align: center;
+            font-size: 1em;
+            transition: background-color 0.3s ease, transform 0.3s ease;
+            width: 180px;
+            margin: 0 auto;
+        }
+
+        .card .show-links a:hover {
+            background-color: #3b5998;
+            transform: translateY(-5px);
+        }
+
+        #noResults {
+            display: none;
+            text-align: center;
+            font-size: 1.2em;
+            color: #888;
+        }
+
+        /* Dark mode styles */
+        .dark-mode {
+            background-color: #1e1e1e;
+            color: #ffffff;
+        }
+
+        .dark-mode header {
+            background-color: #121212;
+        }
+
+        .dark-mode .card {
+            background-color: #2e2e2e;
+            color: #ffffff;
+        }
+
+        .dark-mode .card h2 {
+            color: #ffffff;
+        }
+
+        .dark-mode .toggle-link, .dark-mode .show-links a {
+            background-color: #f5c200;
+            color: #000;
+        }
+
+        .dark-mode h1 {
+            color: #ffffff;
+        }
+
+        .dark-mode #darkModeToggle {
+            background-color: transparent;
+            color: #f5c200;
+        }
+
+        .dark-mode .tooltip .tooltiptext {
+            background-color: #444;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <a href="index.html">
+        <img src="Logotipo UNISUAM.png" alt="Logotipo">
+            </a>
+        <div class="search-bar">
+            <div class="button-group">
+                <button onclick="toggleDarkMode()" id="darkModeToggle" class="theme-toggle">
+                    🌙
+                    <span class="tooltiptext">Ativar modo escuro</span>
+                </button>
+                <a href="https://docs.google.com/presentation/d/1S98W_EskCuOKAh6G9iZln9KnS2fPL27fJw7a-59_lSY/edit?usp=sharing" target="_blank" style="padding:10px;margin-right: 20px; background-color:#3b5998; color:white; border:none; border-radius:25px; text-decoration:none;">Orientações</a>
+            </div>
+            <input type="text" id="searchInput" onkeyup="filterCards()" placeholder="Buscar setor...">
+        </div>
+    </header>
+
+    <h1>Salas Virtuais Dos Setores</h1>
+
+    <div id="noResults">Nenhum setor encontrado.</div>
+
+    <div class="container" id="cardContainer">
+        <!-- Card template -->
+        <div class="card">
+            <h2>Setor Bolsas</h2>
+            <div class="tooltip">
+                <div class="toggle-link" onclick="toggleLinks(this)">Veja o seu link!</div>
+                <span class="tooltiptext">Clique para acessar os links da reunião</span>
+            </div>
+            <div class="show-links">
+                <a href="https://meet.jit.si/SetorBolsas" target="_blank">Acesso do Participante</a>
+                <a href="https://meet.jit.si/SetorBolsas" target="_blank">Acesso do Administrador</a>
+            </div>
+        </div>
+
+        <!-- Repetir para os demais setores -->
+        <div class="card">
+            <h2>Setor Coordenação</h2>
+            <div class="tooltip">
+                <div class="toggle-link" onclick="toggleLinks(this)">Veja o seu link!</div>
+                <span class="tooltiptext">Clique para acessar os links da reunião</span>
+            </div>
+            <div class="show-links">
+                <a href="https://meet.jit.si/SetorCoordenacao" target="_blank">Acesso do Participante</a>
+                <a href="https://meet.jit.si/SetorCoordenacao" target="_blank">Acesso do Administrador</a>
+            </div>
+        </div>
+
+        <div class="card">
+            <h2>Setor Diplomas</h2>
+            <div class="tooltip">
+                <div class="toggle-link" onclick="toggleLinks(this)">Veja o seu link!</div>
+                <span class="tooltiptext">Clique para acessar os links da reunião</span>
+            </div>
+            <div class="show-links">
+                <a href="https://meet.jit.si/SetorDiplomas" target="_blank">Acesso do Participante</a>
+                <a href="https://meet.jit.si/SetorDiplomas" target="_blank">Acesso do Administrador</a>
+            </div>
+        </div>
+
+        <!-- Repetir para outros setores -->
+        <div class="card">
+            <h2>Setor Relacionamento</h2>
+            <div class="tooltip">
+                <div class="toggle-link" onclick="toggleLinks(this)">Veja o seu link!</div>
+                <span class="tooltiptext">Clique para acessar os links da reunião</span>
+            </div>
+            <div class="show-links">
+                <a href="https://meet.jit.si/SetorRelacionamento" target="_blank">Acesso do Participante</a>
+                <a href="https://meet.jit.si/SetorRelacionamento" target="_blank">Acesso do Administrador</a>
+            </div>
+        </div>
+
+        <div class="card">
+            <h2>Setor Captação</h2>
+            <div class="tooltip">
+                <div class="toggle-link" onclick="toggleLinks(this)">Veja o seu link!</div>
+                <span class="tooltiptext">Clique para acessar os links da reunião</span>
+            </div>
+            <div class="show-links">
+                <a href="https://meet.jit.si/SetorCaptacao" target="_blank">Acesso do Participante</a>
+                <a href="https://meet.jit.si/SetorCaptacao" target="_blank">Acesso do Administrador</a>
+            </div>
+        </div>
+
+        <div class="card">
+            <h2>Setor Retenção e Permanência</h2>
+            <div class="tooltip">
+                <div class="toggle-link" onclick="toggleLinks(this)">Veja o seu link!</div>
+                <span class="tooltiptext">Clique para acessar os links da reunião</span>
+            </div>
+            <div class="show-links">
+                <a href="https://meet.jit.si/SetorRetencao" target="_blank">Acesso do Participante</a>
+                <a href="https://meet.jit.si/SetorRetencao" target="_blank">Acesso do Administrador</a>
+            </div>
+        </div>
+
+        <div class="card">
+            <h2>Setor Tecnologias Educacionais</h2>
+            <div class="tooltip">
+                <div class="toggle-link" onclick="toggleLinks(this)">Veja o seu link!</div>
+                <span class="tooltiptext">Clique para acessar os links da reunião</span>
+            </div>
+            <div class="show-links">
+                <a href="https://meet.jit.si/SetorTecnologiasEducacionais" target="_blank">Acesso do Participante</a>
+                <a href="https://meet.jit.si/SetorTecnologiasEducacionais" target="_blank">Acesso do Administrador</a>
+            </div>
+        </div>
+
+        <div class="card">
+            <h2>Setor Suporte Financeiro</h2>
+            <div class="tooltip">
+                <div class="toggle-link" onclick="toggleLinks(this)">Veja o seu link!</div>
+                <span class="tooltiptext">Clique para acessar os links da reunião</span>
+            </div>
+            <div class="show-links">
+                <a href="https://meet.jit.si/SetorSuporteFinanceiro" target="_blank">Acesso do Participante</a>
+                <a href="https://meet.jit.si/SetorSuporteFinanceiro" target="_blank">Acesso do Administrador</a>
+            </div>
+        </div>
+
+        <div class="card">
+            <h2>Setor Eventos</h2>
+            <div class="tooltip">
+                <div class="toggle-link" onclick="toggleLinks(this)">Veja o seu link!</div>
+                <span class="tooltiptext">Clique para acessar os links da reunião</span>
+            </div>
+            <div class="show-links">
+                <a href="https://meet.jit.si/SetorEventos" target="_blank">Acesso do Participante</a>
+                <a href="https://meet.jit.si/SetorEventos" target="_blank">Acesso do Administrador</a>
+            </div>
+        </div>
+
+        <div class="card">
+            <h2>Setor Marketing</h2>
+            <div class="tooltip">
+                <div class="toggle-link" onclick="toggleLinks(this)">Veja o seu link!</div>
+                <span class="tooltiptext">Clique para acessar os links da reunião</span>
+            </div>
+            <div class="show-links">
+                <a href="https://meet.jit.si/SetorMarketing" target="_blank">Acesso do Participante</a>
+                <a href="https://meet.jit.si/SetorMarketing" target="_blank">Acesso do Administrador</a>
+            </div>
+        </div>
+
+        <div class="card">
+            <h2>Setor Stricto-Sensu</h2>
+            <div class="tooltip">
+                <div class="toggle-link" onclick="toggleLinks(this)">Veja o seu link!</div>
+                <span class="tooltiptext">Clique para acessar os links da reunião</span>
+            </div>
+            <div class="show-links">
+                <a href="https://meet.jit.si/SetorStrictoSensu" target="_blank">Acesso do Participante</a>
+                <a href="https://meet.jit.si/SetorStrictoSensu" target="_blank">Acesso do Administrador</a>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function filterCards() {
+            var input, filter, container, cards, h2, i, txtValue;
+            input = document.getElementById('searchInput');
+            filter = input.value.toUpperCase();
+            container = document.getElementById('cardContainer');
+            cards = container.getElementsByClassName('card');
+            let hasVisibleCards = false;
+
+            for (i = 0; i < cards.length; i++) {
+                h2 = cards[i].getElementsByTagName("h2")[0];
+                txtValue = h2.textContent || h2.innerText;
+                if (txtValue.toUpperCase().indexOf(filter) > -1) {
+                    cards[i].style.display = "";
+                    hasVisibleCards = true;
+                } else {
+                    cards[i].style.display = 'none';
+                }
+            }
+
+            document.getElementById('noResults').style.display = hasVisibleCards ? 'none' : 'block';
+        }
+
+        function toggleLinks(button) {
+    var card = button.closest('.card');
+    var links = card.querySelector('.show-links');
+    if (links.style.display === 'none' || links.style.display === '') {
+        links.style.display = 'flex';
+        button.textContent = 'Fechar';
+        button.style.backgroundColor = '#0f96ae';
+    } else {
+        links.style.display = 'none';
+        button.textContent = 'Veja o seu link!';
+        button.style.backgroundColor = '#3b5998';
+    }
+}
+
+        function toggleDarkMode() {
+            const toggleButton = document.getElementById('darkModeToggle');
+            document.body.classList.toggle("dark-mode");
+            toggleButton.textContent = document.body.classList.contains("dark-mode") ? "☀️" : "🌙";
+
+            const tooltip = toggleButton.querySelector('.tooltiptext');
+            if (tooltip) {
+                tooltip.textContent = document.body.classList.contains("dark-mode") ? "Desativar modo escuro" : "Ativar modo escuro";
+            }
+        }
+    </script>
+</body>
+</html>
