@@ -274,8 +274,7 @@
                 <input type="text" id="searchInput" onkeyup="filterCards()" placeholder="Buscar setor...">
             </div>
             <a href="https://docs.google.com/presentation/d/1S98W_EskCuOKAh6G9iZln9KnS2fPL27fJw7a-59_lSY/edit?usp=sharing" target="_blank" style="padding:10px;background-color:#3b5998;color:white;border:none;border-radius:25px;text-decoration:none;margin-right:10px;">Orientações</a>
-            <button onclick="toggleDarkMode()" id="darkModeToggle" class="theme-toggle">
-                🌙
+            <button id="darkModeToggle" class="theme-toggle">🌙</button>
             </button>
             <span class="menu-icon" onclick="openSideMenu()">☰</span>
         </div>
@@ -324,41 +323,90 @@
     </div>
 
     <script>
-        function openSideMenu() {
-            document.getElementById("sideMenu").style.width = "250px";
-        }
+    // Função para abrir o menu lateral
+    function openSideMenu() {
+        document.getElementById("sideMenu").style.width = "250px";
+    }
 
-        function closeSideMenu() {
-            document.getElementById("sideMenu").style.width = "0";
-        }
+    // Função para fechar o menu lateral
+    function closeSideMenu() {
+        document.getElementById("sideMenu").style.width = "0";
+    }
 
-        function filterCards() {
-            var input, filter, container, cards, h2, i, txtValue;
-            input = document.getElementById('searchInput');
-            filter = input.value.toUpperCase();
-            container = document.getElementById('cardContainer');
-            cards = container.getElementsByClassName('card');
-            let hasVisibleCards = false;
+    // Função para filtrar os cards com base na pesquisa
+    function filterCards() {
+        var input, filter, container, cards, h2, i, txtValue;
+        input = document.getElementById('searchInput');
+        filter = input.value.toUpperCase();
+        container = document.getElementById('cardContainer');
+        cards = container.getElementsByClassName('card');
+        let hasVisibleCards = false;
 
-            for (i = 0; i < cards.length; i++) {
-                h2 = cards[i].getElementsByTagName("h2")[0];
-                txtValue = h2.textContent || h2.innerText;
-                if (txtValue.toUpperCase().indexOf(filter) > -1) {
-                    cards[i].style.display = "";
-                    hasVisibleCards = true;
-                } else {
-                    cards[i].style.display = 'none';
-                }
+        for (i = 0; i < cards.length; i++) {
+            h2 = cards[i].getElementsByTagName("h2")[0];
+            txtValue = h2.textContent || h2.innerText;
+            if (txtValue.toUpperCase().indexOf(filter) > -1) {
+                cards[i].style.display = "";
+                hasVisibleCards = true;
+            } else {
+                cards[i].style.display = 'none';
             }
-
-            document.getElementById('noResults').style.display = hasVisibleCards ? 'none' : 'block';
         }
 
-        function toggleDarkMode() {
-            const toggleButton = document.getElementById('darkModeToggle');
-            document.body.classList.toggle("dark-mode");
-            toggleButton.textContent = document.body.classList.contains("dark-mode") ? "☀️" : "🌙";
+        document.getElementById('noResults').style.display = hasVisibleCards ? 'none' : 'block';
+    }
+
+    // Função para alternar a exibição dos links nos cards
+    function toggleLinks(button) {
+        var card = button.closest('.card');
+        var links = card.querySelector('.show-links');
+        
+        if (links.style.display === 'none' || links.style.display === '') {
+            links.style.display = 'flex';
+            button.textContent = 'Fechar';
+            button.style.backgroundColor = '#0f96ae';  // Cor para o botão "Fechar"
+            button.style.color = '#ffffff';  // Cor do texto
+        } else {
+            links.style.display = 'none';
+            button.textContent = 'Veja o seu link!';
+            
+            // Verifica se o modo escuro está ativado para aplicar a cor correta
+            if (document.body.classList.contains("dark-mode")) {
+                button.style.backgroundColor = '#f5c200';  // Cor amarela no modo escuro
+                button.style.color = '#000';  // Texto preto
+            } else {
+                button.style.backgroundColor = '#3b5998';  // Cor azul no modo claro
+                button.style.color = '#ffffff';  // Texto branco
+            }
         }
-    </script>
-</body>
-</html>
+    }
+
+    // Função para alternar o modo escuro e claro
+    function toggleDarkMode() {
+        const toggleButton = document.getElementById('darkModeToggle');
+        const isDarkMode = document.body.classList.toggle("dark-mode");
+        toggleButton.textContent = isDarkMode ? "☀️" : "🌙";
+
+        // Salvar a preferência no localStorage
+        localStorage.setItem('darkMode', isDarkMode ? 'enabled' : 'disabled');
+    }
+
+    // Função para carregar a preferência de modo escuro do localStorage
+    function loadDarkModePreference() {
+        const darkModePreference = localStorage.getItem('darkMode');
+
+        // Se o modo escuro estava ativado, aplicá-lo novamente
+        if (darkModePreference === 'enabled') {
+            document.body.classList.add("dark-mode");
+            document.getElementById('darkModeToggle').textContent = "☀️";
+        }
+    }
+
+    // Executar a função para carregar a preferência assim que a página carregar
+    window.onload = function() {
+        loadDarkModePreference();
+        
+        // Adicionar o evento de clique ao botão para alternar o modo escuro
+        document.getElementById('darkModeToggle').addEventListener('click', toggleDarkMode);
+    };
+</script>
